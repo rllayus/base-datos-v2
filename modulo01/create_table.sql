@@ -20,6 +20,7 @@ create table _session
     foreign key (user_id) references my_user (id)
 );
 
+
 CREATE SEQUENCE seq_my_user
     INCREMENT BY 1
     START WITH 1
@@ -32,6 +33,8 @@ CREATE SEQUENCE seq_session
 
 -- Definir un generador de valores por defecto para una columna
 --ALTER TABLE my_user ALTER COLUMN id SET DEFAULT nextval('seq_my_user');
+
+
 
 --- Insert de varios registros
 insert into my_user(id, name, lastname, document_number, age, gender)
@@ -68,6 +71,7 @@ values (nextval('seq_session'), now()),
        (nextval('seq_session'), now())
 ;
 
+------
 INSERT INTO company (id, name, nit, state)
 SELECT nextval('seq_company_id'),
        'Company ' || s.i,
