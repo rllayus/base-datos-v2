@@ -1,18 +1,21 @@
 # ADMINISTRACIÓN DE BASE DE DATOS
 
-* **1. Administración de usuarios**
+* **1. Administración de usuarios y Roles**
 * **2. Creación de base de datos**
-* **3. Asignación de permiso a un usuario**
-* **4. Práctica en clases**
+* **3. Gestión de Privilegios Granulares**
+* **4. Estructuración mediante Esquemas (Schemas)**
+* **5. Práctica en clases**
+* **6. Optimización y Mantenimiento**
+
+---
 
 
-## 1. Administración de usuarios
-Lo primero que debemos saber es que Postgres considera de la misma manera a roles, grupos y usuarios, en la materia 
-nosotros crearemos directamente usuarios.
-La sintaxis para crear un usuario es:
+## 1. Administración de Usuarios y Roles
+Lo primero que debemos saber es que Postgres considera de la misma manera a roles, grupos y usuarios; en la materia nosotros crearemos directamente usuarios.
+La sintaxis para crear un usuario con acceso restringido es:
 
 ```sql
-    CREATE USER user_reporte WITH
+    CREATE USER user_01 WITH
     LOGIN
     NOSUPERUSER
     INHERIT
@@ -20,12 +23,13 @@ La sintaxis para crear un usuario es:
     NOCREATEROLE
     NOREPLICATION
 ```
-Con la sentencia anterior hemos creado un usuario que 
-* podrá hacer login pero no será super usuario
-* Heredará los privilegios del rol padre
-* No podrá crear Base de Datos
-* No podrá crear roles o usuarios
-* y no podrá iniciar el proceso de réplica o backup de seguridad.
+
+Con la sentencia anterior hemos creado un usuario que:
+* Podrá hacer login pero no será superusuario.
+* Heredará los privilegios del rol padre.
+* No podrá crear Bases de Datos.
+* No podrá crear roles o usuarios.
+* No podrá iniciar el proceso de réplica o backup de seguridad.
 
 Para que definamos una contraseña para el usuario se debe ejecutar la siguiente sentencia
 ```sql
@@ -39,10 +43,8 @@ que acabamos de crear, para ello ejecutaremos la siguiente sentencia.
     CREATE DATABASE my_db_01 WITH OWNER user_01;
 ```
 
-## 3. Asignación de permiso a un usuario
-Ahora que hemos creado la Base de Datos es hora de definir los privilegios que el usuario propietario tendrá sobre la 
-base de datos;
-Se supone que el nuevo usuario como es **OWNER** debiera tener todos los privilegios, por lo que le asignaremos esto.
+## 3. Gestión de Privilegios Granulares
+Se supone que el nuevo usuario como es **OWNER** y debiera tener todos los privilegios, por lo que le asignaremos todos los permisos.
 ```sql
     GRANT ALL PRIVILEGES ON DATABASE my_db_01 TO user_01;
 ```
