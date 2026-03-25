@@ -54,3 +54,4 @@ drop database my_db_01;
   Sentencia para eliminar un rol, esta sentencia igualmente elimina al usuario porque son lo mismo
  */
 drop role user_reporte;
+
