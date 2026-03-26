@@ -99,6 +99,47 @@ Se requiere crear una base de datos para la empresa **Coca Cola** con las siguie
 * Se debe crear un usuario para la aplicación de pedidos que le permita realizar INSERT, UPDATE, DELETE y que permita crear tablas, secuencias
 * Para el sistema de reportes se debe crear un usuario que sólo pueda leer datos
 
+## Administracion de esquemas
+Las buenas practicas es que dividamos las tablas de base de datos en esquemas, cuando creamos un esquema usualmente también
+creamos un usuario que tendrá permisos a esa esquema.
+
+```sql
+-------------- ejercicios con esquemas -----------------------
+ CREATE USER user_venta WITH
+    LOGIN
+    NOSUPERUSER
+    INHERIT
+    NOCREATEDB
+    NOCREATEROLE
+    NOREPLICATION;
+
+ALTER USER user_venta WITH PASSWORD '123456';
+```
+
+Sentencia para crear esquema llamada *venta*
+```sql
+CREATE SCHEMA ventas;
+```
+
+Con el usuario owner de base de datos debemos ejecutar la instrucción para dar permiso al esquema.
+```sql
+GRANT USAGE on schema ventas to user_venta;
+```
+
+Podemos dar permisos especificos a las tablas actuales como sigue a continuación.
+
+```sql
+---Permisos especificos
+GRANT SELECT ON ALL TABLES IN SCHEMA ventas TO user_venta;
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA ventas TO user_venta;
+```
+
+O podemos crear 
+```sql
+--Permisos por defectos
+ALTER DEFAULT PRIVILEGES IN SCHEMA ventas GRANT SELECT ON TABLES TO user_venta;
+```
+
 ## Optimización de base de datos
 Para optimizar la base de datos se debe configurar parámetros del motor de base de datos, para saber que parámetos se debe modificar 
 es mejor utilizar el sitio [PGTune](https://pgtune.leopard.in.ua/)
