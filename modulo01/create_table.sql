@@ -71,6 +71,7 @@ values (nextval('seq_session'), now()),
        (nextval('seq_session'), now())
 ;
 
+
 ------
 INSERT INTO company (id, name, nit, state)
 SELECT nextval('seq_company_id'),

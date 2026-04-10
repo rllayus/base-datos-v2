@@ -258,7 +258,7 @@ BEGIN
     END IF;
 
     -- Inicia el bucle para insertar 20 millones de registros
-    FOR i IN 1..20000000 LOOP
+    FOR i IN 1..2000 LOOP
         -- Generamos IDs y cantidades aleatorias
         random_nota_venta_id := (SELECT floor(random() * max_nota_venta_id) + 1)::BIGINT;
         random_articulo_id := (SELECT floor(random() * max_articulo_id) + 1)::BIGINT;
