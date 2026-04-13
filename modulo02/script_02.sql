@@ -40,8 +40,6 @@ create table if not exists my_user
 )
 ;
 
-alter table my_user
-    owner to user_01;
 
 create table if not exists _session
 (
@@ -65,8 +63,6 @@ create table if not exists nota_venta
     total       numeric(20, 10)
 );
 
-alter table nota_venta
-    owner to user_01;
 
 create table if not exists detalle_nota_venta
 (
