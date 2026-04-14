@@ -96,7 +96,7 @@ END
 $$ LANGUAGE plpgsql;
 
 
-SELECT F_PRECIO(2);
+SELECT F_PRECIO(3);
 
 DO
 $$
@@ -107,3 +107,65 @@ $$
         RAISE NOTICE 'Resultado %', V_RESULT;
     END
 $$ LANGUAGE plpgsql;
+
+
+-----
+
+CREATE OR REPLACE PROCEDURE SP_VENTA_PRODUCTO(
+    IN P_DOC_CLIENTE VARCHAR, IN P_PRODUCTO VARCHAR, IN P_CANTIDAD INT)
+AS
+$$
+    DECLARE
+        v_precio         NUMERIC;
+        v_id_cliente     INT;
+        v_id_producto    INT;
+        v_id_nota_venta  INT;
+        V_STOCK          INT;
+    BEGIN
+        IF P_CANTIDAD <= 0 THEN
+            RAISE NOTICE 'La cantidad debe ser mayor a cero';
+            --RESULT:='La cantidad debe ser mayor a cero';
+            RETURN;
+        END IF;
+
+        SELECT ID INTO v_id_cliente FROM MY_USER WHERE document_number = P_DOC_CLIENTE;
+        IF NOT FOUND THEN
+            RAISE NOTICE 'El cliente no existe';
+            RETURN;
+        END IF;
+
+        SELECT ID, PRICE, STOCK
+        INTO v_id_producto, v_precio, V_STOCK
+        FROM PRODUCT
+        WHERE name = P_PRODUCTO FOR UPDATE;
+
+        IF NOT FOUND THEN
+            RAISE WARNING 'No hay el producto %', P_PRODUCTO;
+            RETURN;
+        END IF;
+
+        IF V_STOCK < P_CANTIDAD THEN
+            RAISE WARNING 'No hay Stock %', P_PRODUCTO;
+            RETURN;
+        END IF;
+
+        INSERT INTO nota_venta (id, date, customer_id, total)
+        VALUES (nextval('seq_nota_venta_id'), now(), v_id_cliente, P_CANTIDAD * v_precio)
+        RETURNING id INTO v_id_nota_venta;
+
+        INSERT INTO detalle_nota_venta(id, price, quantity, total, nota_venta_id, product_id)
+        VALUES (nextval('seq_det_nota_venta_id'), v_precio, P_CANTIDAD, P_CANTIDAD * v_precio, v_id_nota_venta,
+                v_id_producto);
+
+        UPDATE product
+        SET stock = stock - P_CANTIDAD
+        WHERE id = v_id_producto;
+
+        RAISE INFO 'EL Cliente % a comprado % % exitosamente',
+            P_DOC_CLIENTE, P_CANTIDAD, P_PRODUCTO;
+    END;
+$$ LANGUAGE plpgsql;
+
+
+call SP_VENTA_PRODUCTO('d56abbeb9bacbe9', 'Producto 1', 20);
+
