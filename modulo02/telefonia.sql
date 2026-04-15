@@ -184,3 +184,21 @@ BEGIN
         trunc(random() * 1073741824)
     FROM generate_series(1, 50000);
 END $$;
+
+-- Generar 12 facturas por cada abonado (1 por mes)
+INSERT INTO facturas (id_abonado, numero_factura, monto_total, fecha_emision, estado_pago)
+SELECT
+    a.id_abonado,
+    -- Generamos un número de factura único basado en el año, mes y teléfono
+    'FAC-' || TO_CHAR(NOW() - (meses.m * INTERVAL '1 month'), 'YYYYMM') || '-' || SUBSTRING(a.numero_telefono FROM 5),
+    -- Monto aleatorio entre 50.00 y 250.00
+    (random() * 200 + 50)::NUMERIC(10,2),
+    -- Fecha de emisión: primer día del mes respectivo +/- 2 días aleatorios
+    NOW() - (meses.m * INTERVAL '1 month') - (random() * INTERVAL '2 days'),
+    -- El 85% de las facturas aparecerán como PAGADAS
+    CASE WHEN random() > 0.15 THEN 'PAGADA' ELSE 'PENDIENTE' END
+FROM abonados a
+CROSS JOIN generate_series(1, 12) AS meses(m);
+
+-- Verificación: Contar cuántas facturas se crearon
+SELECT count(*) as total_facturas FROM facturas;
