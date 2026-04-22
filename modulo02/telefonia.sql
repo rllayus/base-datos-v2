@@ -220,3 +220,14 @@ $$
 
     END
 $$;
+
+
+
+CREATE OR REPLACE VIEW V_ABONADO AS
+    SELECT a.id_abonado, a.numero_telefono, a.nombres, a.apellidos,
+
+           CASE WHEN (bs.fecha_expiracion IS NULL OR bs.fecha_expiracion < current_timestamp) THEN '0' ELSE bs.saldo_datos_mb END AS   saldo_datos,
+
+           CASE WHEN (bs.fecha_expiracion IS NULL OR bs.fecha_expiracion < current_timestamp) THEN '0' ELSE bs.saldo_minutos_voz END AS   saldo_vos
+
+           FROM abonados a LEFT JOIN bolsas_saldo bs  on (a.id_abonado = bs.id_abonado);
