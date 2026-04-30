@@ -5,7 +5,7 @@ Este documento proporciona una guía completa para la instalación, configuraci�
 
 ---
 
-## 🚢 Configuración en Docker (Puertos)
+## Configuración en Docker (Puertos)
 
 Al levantar el contenedor (vía Docker Desktop o CLI), es vital mapear los puertos correctamente para permitir la comunicación del clúster y el acceso de clientes:
 
